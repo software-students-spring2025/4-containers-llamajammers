@@ -31,3 +31,8 @@ def audio_recording(filename="recording.wav"):
     audio.terminate()
 
     return filename
+
+
+if __name__ == "__main__":
+    recording = audio_recording()  # Records for 5 seconds
+    print(f"Audio saved to {recording}")
