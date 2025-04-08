@@ -1,0 +1,3 @@
+# Audio processing (must have ffmpeg installed on system)
+PyAudio==0.2.14
+openai-whisper==20240930
