@@ -1,6 +1,7 @@
 """Using Whisper from Open AI, converts an audio recording to text transcript."""
 
 import whisper  # also need to install ffmpeg
+from audio_recording import audio_recording
 
 
 def speech_to_text(recording):
