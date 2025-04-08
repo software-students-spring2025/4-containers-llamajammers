@@ -11,7 +11,9 @@ def audio_recording(filename="recording.wav"):
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100  # not sure what is optimal for audio recording
-    RECORD_SECONDS = 5  # should we change to 1 minute?
+    RECORD_SECONDS = (
+        60  # should we change to 1 minute? -> can also be parameter in the definition
+    )
 
     # pylint: disable=no-member
     # ^ suppressing an error with pylint but i dont think this is an issue at runtime
