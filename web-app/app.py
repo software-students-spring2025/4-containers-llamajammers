@@ -1,43 +1,45 @@
+"""Flask Web App for Filler Words Detection.
+
+This module provides a simple Flask application for recording audio,
+transcribing it using the machine-learning client, counting filler words,
+and displaying the results.
+"""
+
 import os
 import sys
 import threading
-#import wave
 import re
-#import time
 from datetime import datetime
 
 from flask import Flask, render_template_string, jsonify
 from pymongo import MongoClient
-#import pyaudio
-#import whisper
+
 # Add the machine-learning-client directory to the Python path
 current_dir = os.path.dirname(__file__)
 parent_dir = os.path.dirname(current_dir)
 ml_client_path = os.path.join(parent_dir, "machine-learning-client")
 sys.path.append(ml_client_path)
 
+# Disable warnings for import position and import errors (run in proper env)
+# pylint: disable=import-error,wrong-import-position
 from audio_recording import audio_recording
 from speech_to_text import speech_to_text
+# pylint: enable=import-error,wrong-import-position
 
 app = Flask(__name__)
-#recording_thread = None
-#stop_recording_event = None
-RECORDING_FILENAME = "recording.wav" # or should it be "../machine-learning-client/recording.wav"
+RECORDING_FILENAME = "recording.wav"  # or adjust path if needed
 
-# MongoDB connection 
+# MongoDB connection
 client = MongoClient("mongodb://localhost:27017/")
-db = client['filler_words_detection']
-recordings_collection = db['recordings']
-
-# Load the Whisper model (NOT ANYMORE => implemented in ml client folder instead)
-#whisper_model = whisper.load_model("medium") # chose medium for now
+db = client["filler_words_detection"]
+recordings_collection = db["recordings"]
 
 # List of filler words to detect (can add more later)
 FILLER_WORDS = [
     "um", "uh", "like", "you know", "so", "well", "I mean",
-    "just", "basically", "sort of", "kind of", "hmm", "I guess", "yeah", "right", "basically"
+    "just", "basically", "sort of", "kind of", "hmm", "I guess",
+    "yeah", "right", "basically"
 ]
-
 
 # HTML Template for the Main Page
 MAIN_PAGE_TEMPLATE = """
@@ -85,7 +87,6 @@ MAIN_PAGE_TEMPLATE = """
 </html>
 """
 
-# FUNCTIONS
 def count_filler_words(transcript):
     """Count total occurrences of filler words in the transcript."""
     total = 0
@@ -96,26 +97,33 @@ def count_filler_words(transcript):
         total += len(matches)
     return total
 
-# global variables
+# Global variables (allowing non-constant naming)
+# pylint: disable=invalid-name
 recording_thread = None
 stop_recording_event = None
+# pylint: enable=invalid-name
 
 @app.route("/")
 def index():
+    """Render the main page."""
     return render_template_string(MAIN_PAGE_TEMPLATE)
 
 @app.route("/start_recording", methods=["GET"])
 def start_recording():
-    global recording_thread, stop_recording_event
+    """Start recording audio in a background thread."""
+    global recording_thread, stop_recording_event  # pylint: disable=global-variable-not-assigned,global-statement
     stop_recording_event = threading.Event()
     # Start the interactive recording in a background thread
-    recording_thread = threading.Thread(target=audio_recording, args=(RECORDING_FILENAME, stop_recording_event))
+    recording_thread = threading.Thread(
+        target=audio_recording, args=(RECORDING_FILENAME, stop_recording_event)
+    )
     recording_thread.start()
     return jsonify({"status": "recording started"})
 
 @app.route("/stop_recording", methods=["GET"])
 def stop_recording():
-    global recording_thread, stop_recording_event
+    """Stop the recording, process the transcription, and store the result."""
+    global recording_thread, stop_recording_event  # pylint: disable=global-variable-not-assigned,global-statement
 
     if stop_recording_event:
         stop_recording_event.set() 
@@ -123,17 +131,17 @@ def stop_recording():
         recording_thread.join()
 
     try:
-        transcript = speech_to_text(RECORDING_FILENAME)
-    except Exception as e:
-        transcript = f"Error during transcription: {e}"
+        transcribed_text = speech_to_text(RECORDING_FILENAME)
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        transcribed_text = f"Error during transcription: {e}"
 
-    filler_count = count_filler_words(transcript)
+    filler_count = count_filler_words(transcribed_text)
     record_data = {
         "timestamp": datetime.utcnow(),
-        "transcript": transcript,
+        "transcript": transcribed_text,
         "filler_count": filler_count,
         "detailed_counts": {
-            word: len(re.findall(r'\b' + re.escape(word) + r'\b', transcript.lower()))
+            word: len(re.findall(r'\b' + re.escape(word) + r'\b', transcribed_text.lower()))
             for word in FILLER_WORDS
         }
     }
@@ -143,6 +151,7 @@ def stop_recording():
 
 @app.route("/transcript", methods=["GET"])
 def transcript():
+    """Render the transcript page with highlighted filler words."""
     doc = recordings_collection.find_one(sort=[("timestamp", -1)])
     if doc is None:
         transcript_text = "No transcript available."

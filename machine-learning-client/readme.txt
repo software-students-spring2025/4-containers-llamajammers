@@ -8,13 +8,13 @@ To ensure that your machine learning client environment is correctly configured 
 
    In the `machine-learning-client` directory, update your lock file and install the dependencies:
    
-   ```bash
-   pipenv lock --clear
-   pipenv install
+        ```bash
+        pipenv lock --clear
+        pipenv install
 
 2. **Build the Docker Image with the following command**
-   docker build -t ml-client .
+        docker build -t ml-client .
 
-3.**Run the Docker Container Using**
-docker run --rm ml-client
+3. **Run the Docker Container Using**
+        docker run --rm ml-client
 
