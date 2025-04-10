@@ -1,19 +1,27 @@
 import os
+import sys
 import threading
-import wave
+#import wave
 import re
-import time
+#import time
 from datetime import datetime
 
 from flask import Flask, render_template_string, jsonify
 from pymongo import MongoClient
-import pyaudio
-import whisper
+#import pyaudio
+#import whisper
+# Add the machine-learning-client directory to the Python path
+current_dir = os.path.dirname(__file__)
+parent_dir = os.path.dirname(current_dir)
+ml_client_path = os.path.join(parent_dir, "machine-learning-client")
+sys.path.append(ml_client_path)
+
+from audio_recording import audio_recording
+from speech_to_text import speech_to_text
 
 app = Flask(__name__)
-
-recording_thread = None
-stop_recording_event = None
+#recording_thread = None
+#stop_recording_event = None
 RECORDING_FILENAME = "recording.wav" # or should it be "../machine-learning-client/recording.wav"
 
 # MongoDB connection 
@@ -21,11 +29,14 @@ client = MongoClient("mongodb://localhost:27017/")
 db = client['filler_words_detection']
 recordings_collection = db['recordings']
 
-# Load the Whisper model
-whisper_model = whisper.load_model("medium") # chose medium for now
+# Load the Whisper model (NOT ANYMORE => implemented in ml client folder instead)
+#whisper_model = whisper.load_model("medium") # chose medium for now
 
 # List of filler words to detect (can add more later)
-FILLER_WORDS = ["um", "uh", "like", "you know", "so", "well", "I mean", "just", "basically", "sort of", "kind of", "hmm", "I guess", "yeah"]
+FILLER_WORDS = [
+    "um", "uh", "like", "you know", "so", "well", "I mean",
+    "just", "basically", "sort of", "kind of", "hmm", "I guess", "yeah", "right", "basically"
+]
 
 
 # HTML Template for the Main Page
@@ -85,35 +96,9 @@ def count_filler_words(transcript):
         total += len(matches)
     return total
 
-def record_audio(stop_event, filename):
-    """Record audio using PyAudio until stop_event is set."""
-    CHUNK = 1024
-    FORMAT = pyaudio.paInt16
-    CHANNELS = 1
-    RATE = 44100
-
-    audio = pyaudio.PyAudio()
-    wf = wave.open(filename, "wb")
-    wf.setnchannels(CHANNELS)
-    wf.setsampwidth(audio.get_sample_size(FORMAT))
-    wf.setframerate(RATE)
-
-    stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
-    print("Recording started...")
-    while not stop_event.is_set():
-        data = stream.read(CHUNK)
-        wf.writeframes(data)
-    print("Recording stopped.")
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
-    wf.close()
-
-def recording_process():
-    """Starts the recording process; runs in a separate thread."""
-    global stop_recording_event
-    stop_recording_event = threading.Event()
-    record_audio(stop_recording_event, RECORDING_FILENAME)
+# global variables
+recording_thread = None
+stop_recording_event = None
 
 @app.route("/")
 def index():
@@ -121,31 +106,28 @@ def index():
 
 @app.route("/start_recording", methods=["GET"])
 def start_recording():
-    global recording_thread
-    # Launch recording in a new thread
-    recording_thread = threading.Thread(target=recording_process)
+    global recording_thread, stop_recording_event
+    stop_recording_event = threading.Event()
+    # Start the interactive recording in a background thread
+    recording_thread = threading.Thread(target=audio_recording, args=(RECORDING_FILENAME, stop_recording_event))
     recording_thread.start()
     return jsonify({"status": "recording started"})
 
 @app.route("/stop_recording", methods=["GET"])
 def stop_recording():
-    global stop_recording_event, recording_thread
+    global recording_thread, stop_recording_event
 
     if stop_recording_event:
         stop_recording_event.set() 
     if recording_thread:
-        recording_thread.join()  #Waiting until recording finishes
+        recording_thread.join()
 
     try:
-        result = whisper_model.transcribe(RECORDING_FILENAME)
-        transcript = result["text"]
+        transcript = speech_to_text(RECORDING_FILENAME)
     except Exception as e:
         transcript = f"Error during transcription: {e}"
 
-    # counting filler words in the transcript
     filler_count = count_filler_words(transcript)
-
-    # saving recording data to MongoDB
     record_data = {
         "timestamp": datetime.utcnow(),
         "transcript": transcript,
@@ -156,7 +138,6 @@ def stop_recording():
         }
     }
     recordings_collection.insert_one(record_data)
-
     summary = f"Detected {filler_count} filler words in your recording."
     return jsonify({"success": True, "summary": summary})
 
@@ -168,14 +149,12 @@ def transcript():
     else:
         transcript_text = doc.get("transcript", "Transcript not found.")
 
-    # highlight filler words by wrapping them with <b> tags
     def highlight_filler(text):
         for word in FILLER_WORDS:
             text = re.sub(r'(\b' + re.escape(word) + r'\b)', r'<b>\1</b>', text, flags=re.IGNORECASE)
         return text
 
     transcript_highlighted = highlight_filler(transcript_text)
-
     transcript_page = f"""
     <!doctype html>
     <html lang="en">
