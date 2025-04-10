@@ -2,17 +2,33 @@
 
 import whisper  # also need to install ffmpeg
 from audio_recording import audio_recording
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
 def speech_to_text(recording):
-    """Whisper is used for Audio Recording to text"""
 
-    model = whisper.load_model(
-        "medium"
-    )  # chose turbo from whisper's README, may have other options
-    transcript = model.transcribe(recording)
+    """Whisper is used for Audio Recording to text
+        Args:
+            recording (str): Path to the audio file.
 
-    return transcript["text"]
+        Returns:
+            str: Transcribed text.
+    """
+
+    try:
+        model = whisper.load_model("medium")
+    except Exception as e:
+        logging.error("Error loading Whisper model: %s", e)
+        raise
+
+    try:
+        transcript = model.transcribe(recording)
+    except Exception as e:
+        logging.error("Error during transcription: %s", e)
+        raise
+
+    return transcript.get("text", "")
 
 
 if __name__ == "__main__":
