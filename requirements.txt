@@ -3,3 +3,4 @@ PyAudio==0.2.14
 openai-whisper==20240930
 Flask==2.2.2
 pymongo==4.3.3
+Werkzeug==2.2.3
