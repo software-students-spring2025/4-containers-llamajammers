@@ -14,6 +14,9 @@ from datetime import datetime
 
 from flask import Flask, render_template_string, jsonify
 from pymongo import MongoClient
+
+from audio_recording import audio_recording
+from speech_to_text import speech_to_text
 # pylint: enable=import-error,wrong-import-position
 
 # Add the machine-learning-client directory to the Python path
@@ -22,8 +25,6 @@ parent_dir = os.path.dirname(current_dir)
 ml_client_path = os.path.join(parent_dir, "machine-learning-client")
 sys.path.append(ml_client_path)
 
-from audio_recording import audio_recording
-from speech_to_text import speech_to_text
 
 app = Flask(__name__)
 RECORDING_FILENAME = "recording.wav"  # Adjust path if needed
