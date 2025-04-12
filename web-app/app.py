@@ -158,7 +158,7 @@ def stop_recording():
     return jsonify({"success": True, "summary": summary})
 
 @app.route("/transcript", methods=["GET"])
-def transcript():
+def transcript(): # pylint: disable=redefined-outer-name
     """Render the transcript page with highlighted filler words."""
     doc = recordings_collection.find_one(sort=[("timestamp", -1)])
     if doc is None:
