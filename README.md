@@ -1,6 +1,6 @@
 ![Lint-free](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/badge.svg)
-[![Machine Learning Client CI](https://github.com/software-students-spring2025/4-containers-llamajammers/actions/workflows/ml-client.yml/badge.svg?branch=main)](https://github.com/software-students-spring2025/4-containers-llamajammers/actions/workflows/ml-client.yml)
-[![Web-app CI](https://github.com/software-students-spring2025/4-containers-llamajammers/actions/workflows/web-app.yml/badge.svg?branch=main)](https://github.com/software-students-spring2025/4-containers-llamajammers/actions/workflows/web-app.yml)
+![Machine Learning Client CI](https://github.com/software-students-spring2025/4-containers-llamajammers/actions/workflows/ml-client.yml/badge.svg?branch=main)
+![Web-app CI](https://github.com/software-students-spring2025/4-containers-llamajammers/actions/workflows/web-app.yml/badge.svg?branch=main)
 
 # Filler Word Detection in Audio Recordings
 
