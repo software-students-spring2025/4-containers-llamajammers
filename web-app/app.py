@@ -51,7 +51,6 @@ FILLER_WORDS = [
     "I guess",
     "yeah",
     "right",
-    "basically",
 ]
 
 # HTML Template for the Main Page
@@ -114,7 +113,6 @@ MAIN_PAGE_TEMPLATE = (
     "        font-size: 18px; \n"
     "        padding: 20px; \n"
     "        border-radius: 5px; \n"
-    "        text-align: left; \n"
     "      }\n"
     "    </style>\n"
     "    <script>\n"
@@ -243,7 +241,7 @@ def transcript():
         for word in FILLER_WORDS:
             text = re.sub(
                 r"(\b" + re.escape(word) + r"\b)",
-                r"<b>\1</b>",
+                r"<span class='filler-word'>\1</span>",
                 text,
                 flags=re.IGNORECASE,
             )
@@ -256,15 +254,55 @@ def transcript():
         "  <head>\n"
         "    <title>Transcript</title>\n"
         "    <style>\n"
-        "      body { font-family: Arial, sans-serif; margin: 30px; }\n"
-        "      h1 { color: #333; }\n"
-        "      pre { background-color: #f8f8f8; padding: 15px; }\n"
+        "      body { \n"
+        "        font-family: Arial, sans-serif; \n"
+        "        margin: 0; \n"
+        "        padding: 0; \n"
+        "        display: flex; \n"
+        "        flex-direction: column; \n"
+        "        align-items: center; \n"
+        "      }\n"
+        "      .container { \n"
+        "        width: 80%; \n"
+        "        margin: 50px auto;\n"
+        "        padding: 30px; \n"
+        "        border-radius: 10px; \n"
+        "        text-align: center; \n"
+        "      }\n"
+        "      h1 { \n"
+        "        color: #333; \n"
+        "        margin-bottom: 30px; \n"
+        "        font-size: 32px; \n"
+        "      }\n"
+        "      .transcript-container { \n"
+        "        background-color: #D3D3D3; \n"
+        "        padding: 20px; \n"
+        "        border-radius: 5px; \n"
+        "        margin-bottom: 30px; \n"
+        "        text-align: left; \n"
+        "        white-space: pre-wrap; \n"
+        "        font-size: 16px; \n"
+        "        display: block; \n"
+        "        font-family: 'Courier New', Courier, monospace; \n"
+        "      }\n"
+        "      .filler-word { \n"
+        "        font-weight: bold; \n"
+        "        padding: 2px 4px; \n"
+        "        border-radius: 3px; \n"
+        "      }\n"
+        "      button { \n"
+        "        padding: 10px 20px; \n"
+        "        font-size: 16px; \n"
+        "        cursor: pointer; \n"
+        "      }\n"
         "    </style>\n"
         "  </head>\n"
         "  <body>\n"
-        "    <h1>Transcript</h1>\n"
-        "    <pre>" + transcript_highlighted + "</pre>\n"
-        "    <button onclick=\"window.location.href='/'\">Back</button>\n"
+        "    <div class='container'>\n"
+        "      <h1>Transcript</h1>\n"
+        "      <div class='transcript-container'>" + transcript_highlighted + "</div>\n"
+        "      <button onclick=\"window.location.href='/'\">Back</button>\n"
+        "    </div>\n"
         "  </body>\n"
         "</html>\n"
     )
