@@ -4,20 +4,26 @@
 
 # Filler Word Detection in Audio Recordings
 
-This project is a containerized application designed to help users, such as students or professionals, improve their spoken communication skills. The system transcribes audio recordings and identifies filler words (like "um," "uh," "like," etc.), providing detailed statistics and feedback for improvement.
+This project is a containerized application designed to help users—such as students, educators, or professionals—improve their spoken communication skills. The system transcribes audio recordings, detects common filler words (like "um," "uh," "like," etc.), and provides feedback for improvement.
 
-## Overview
+---
 
-The application is built as a set of containerized subsystems:
+## Overview of System Architecture
 
-- **Machine Learning Client:**  
-  A Python service that records (or uses pre-recorded) audio, transcribes it using OpenAI's Whisper, and counts filler words. It uses [PyAudio](https://people.csail.mit.edu/hubert/pyaudio/) for audio capture and logs analysis data.
+This system consists of three interconnected components:
 
-- **Web Application:**  
-  A Flask-based web interface allowing users to upload or record audio, view transcription results with highlighted filler words, and track progress over time.
+- **Machine Learning Client**  
+  Records audio using PyAudio, transcribes it using OpenAI Whisper, and performs filler word analysis.
 
-- **Database:**  
-  A MongoDB instance that stores transcriptions, filler word counts, and metadata for each analysis.
+- **Web Application**  
+  A Flask-based frontend that lets users record or upload audio, trigger analysis, and view visualized feedback.
+
+- **MongoDB Database**  
+  Stores transcripts, timestamps, and filler word counts for historical tracking and progress review.
+
+All components run in separate containers managed via `docker-compose`.
+
+---
 
 ## Team Members
 
@@ -26,15 +32,19 @@ The application is built as a set of containerized subsystems:
 - [Nawab Mahmood](https://github.com/NawabMahmood)
 - [Zhi Heng Pan (Harry)](https://github.com/pzhiheng)
 
-## Getting Started
+---
 
-Follow the steps below to configure and run the entire system on your machine.
+## Prerequisites
 
-### Prerequisites
+Ensure the following tools are installed on your system:
 
-- **Docker and Docker Compose:**  
-  Make sure you have [Docker](https://docs.docker.com/get-docker/) installed on your platform.
-- **Additional System Dependencies:**  
-  Your host system may need FFmpeg installed (especially if running the ML client outside the container).
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- (Optional) [FFmpeg](https://ffmpeg.org/download.html) – useful if running audio analysis outside the container
 
-### Configuration
+---
+
+
+## Project Structure
+
+. ├── web-app/ # Flask frontend │ ├── app.py # Main web app logic │ ├── Dockerfile │ ├── Pipfile / Pipfile.lock │ └── tests/ # Pytest-based unit tests ├── machine_learning_client/ # Audio recording + ML analysis │ ├── audio_recording.py │ ├── speech_to_text.py │ ├── Dockerfile │ ├── Pipfile / Pipfile.lock │ └── tests/ ├── docker-compose.yml # Orchestrates all services ├── .github/workflows/ # CI/CD pipeline configs ├── README.md # You are here └── .env.example #

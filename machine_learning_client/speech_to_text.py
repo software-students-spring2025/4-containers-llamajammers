@@ -2,7 +2,10 @@
 
 import logging
 import whisper  # also need to install ffmpeg
-from audio_recording import audio_recording
+from machine_learning_client.audio_recording import audio_recording
+
+
+
 
 logging.basicConfig(level=logging.INFO)
 
