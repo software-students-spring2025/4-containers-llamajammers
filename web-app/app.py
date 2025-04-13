@@ -1,10 +1,3 @@
-"""Flask Web App for Filler Words Detection.
-
-This module provides a simple Flask application that allows users to record
-audio, transcribe it using the machine-learning client, count filler words,
-and display the results.
-"""
-
 # pylint: disable=import-error,wrong-import-position
 import os
 import sys
@@ -15,7 +8,7 @@ from datetime import datetime
 from flask import Flask, render_template_string, jsonify
 from pymongo import MongoClient
 
-# Add the machine-learning-client directory to the Python path
+# adding the machine-learning-client directory to the Python path
 current_dir = os.path.dirname(__file__)
 parent_dir = os.path.dirname(current_dir)
 ml_client_path = os.path.join(parent_dir, "machine-learning-client")
@@ -27,10 +20,10 @@ from speech_to_text import speech_to_text
 # pylint: enable=import-error,wrong-import-position
 
 app = Flask(__name__)
-RECORDING_FILENAME = "recording.wav"  # Adjust path if needed
+RECORDING_FILENAME = "recording.wav"  # adjust path later
 
 # MongoDB connection
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://mongodb:27017/") # change the localhost part later!
 db = client["filler_words_detection"]
 recordings_collection = db["recordings"]
 
@@ -154,28 +147,20 @@ MAIN_PAGE_TEMPLATE = (
 
 
 def count_filler_words(transcription):
-    """Count total occurrences of filler words in the transcript.
-
-    Args:
-        transcript (str): The transcript text.
-
-    Returns:
-        int: The total filler word count.
-    """
     total = 0
     transcript_lower = transcription.lower()
     for word in FILLER_WORDS:
-        pattern = r"\b" + re.escape(word) + r"\b"
+        # slight change to pass the tests: convert filler words to lowercase
+        pattern = r"\b" + re.escape(word.lower()) + r"\b"
         matches = re.findall(pattern, transcript_lower)
         total += len(matches)
     return total
 
 
-# Global variables for recording control.
-# pylint: disable=invalid-name
+
+
 recording_thread = None
 stop_recording_event = None
-# pylint: enable=invalid-name
 
 
 @app.route("/")
