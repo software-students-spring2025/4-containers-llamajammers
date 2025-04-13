@@ -48,3 +48,50 @@ Ensure the following tools are installed on your system:
 ## Project Structure
 
 . ├── web-app/ # Flask frontend │ ├── app.py # Main web app logic │ ├── Dockerfile │ ├── Pipfile / Pipfile.lock │ └── tests/ # Pytest-based unit tests ├── machine_learning_client/ # Audio recording + ML analysis │ ├── audio_recording.py │ ├── speech_to_text.py │ ├── Dockerfile │ ├── Pipfile / Pipfile.lock │ └── tests/ ├── docker-compose.yml # Orchestrates all services ├── .github/workflows/ # CI/CD pipeline configs ├── README.md # You are here └── .env.example #
+
+
+## Clone the Repo
+
+git clone https://github.com/software-students-spring2025/4-containers-llamajammers.git
+cd 4-containers-llamajammers
+
+## Run the app
+docker-compose up
+
+
+### Running Tests
+
+cd machine_learning_client
+pipenv install --dev
+pipenv run pytest tests/ --cov=machine_learning_client --cov-report=term
+
+
+### Web App
+
+cd web-app
+pipenv install --dev
+PYTHONPATH=. pipenv run pytest tests/
+
+
+## Github actions CI/CD
+Linting: Automatically checks code style using pylint and black on push/PR.
+
+Testing: CI runs tests with pytest and pytest-cov on every PR for both subsystems.
+
+Event Logging: GitHub Actions workflow logs PR and push activity with timestamps for traceability.
+
+## License
+
+This project is licensed under the MIT License.
+
+
+---
+
+## Environment Configuration
+
+Create a `.env` file in your root or `web-app/` folder based on the following template:
+
+### `.env.example`
+
+```env
+MONGO_URI=mongodb://mongodb:27017/
