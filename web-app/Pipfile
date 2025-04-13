@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 pylint = "*"
 black = "*"
+pytest = "*"
+pytest-flask = "*"
 pyaudio = "==0.2.14"
 openai-whisper = "==20240930"
 Flask = "*"

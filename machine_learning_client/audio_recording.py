@@ -3,6 +3,8 @@
 import wave
 import logging
 import pyaudio
+import pytest
+from unittest import mock
 
 
 def audio_recording(filename="recording.wav", stop_event=None, record_seconds=60):
