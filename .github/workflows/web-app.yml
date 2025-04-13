@@ -1,6 +1,8 @@
 name: Web App
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
     paths:

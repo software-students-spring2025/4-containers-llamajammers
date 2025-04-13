@@ -1,6 +1,8 @@
 name: ML Client
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
     paths:
