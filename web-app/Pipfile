@@ -10,7 +10,12 @@ pytest = "*"
 pytest-flask = "*"
 pyaudio = "==0.2.14"
 openai-whisper = "==20240930"
+Flask = "*"
+pymongo = "*"
+
 [dev-packages]
+pytest = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.10"
