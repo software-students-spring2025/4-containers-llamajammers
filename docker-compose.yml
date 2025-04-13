@@ -9,7 +9,7 @@ services:
       - mongodb
 
   ml-client:
-    build: ./machine-learning-client
+    build: ./machine_learning_client
     ports:
       - "8000:8000"
 

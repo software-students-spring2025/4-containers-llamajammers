@@ -1,9 +1,6 @@
-import sys
-import types
-dummy_speech_to_text = types.ModuleType("speech_to_text")
-dummy_speech_to_text.speech_to_text = lambda filename: "um uh like"
-sys.modules["speech_to_text"] = dummy_speech_to_text
+# pylint: disable=import-error,wrong-import-position
 import os
+import sys
 import threading
 import re
 from datetime import datetime
@@ -14,7 +11,7 @@ from pymongo import MongoClient
 # adding the machine-learning-client directory to the Python path
 current_dir = os.path.dirname(__file__)
 parent_dir = os.path.dirname(current_dir)
-ml_client_path = os.path.join(parent_dir, "machine-learning-client")
+ml_client_path = os.path.join(parent_dir, "machine_learning_client")
 sys.path.append(ml_client_path)
 
 from audio_recording import audio_recording

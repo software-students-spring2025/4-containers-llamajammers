@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "machine-learning-client/**"
+      - "machine_learning_client/**"
       - ".github/workflows/ml-client.yml"
 
 jobs:
@@ -37,5 +37,5 @@ jobs:
 
       - name: Run tests and collect coverage
         run: |
-          cd machine-learning-client
+          cd machine_learning_client
           PYTHONPATH=. pipenv run pytest tests/ --cov=machine_learning_client --cov-report=term-missing
