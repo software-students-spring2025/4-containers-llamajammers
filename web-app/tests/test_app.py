@@ -1,10 +1,10 @@
+import os
 import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import types
 dummy_speech_to_text = types.ModuleType("speech_to_text")
 dummy_speech_to_text.speech_to_text = lambda filename: "um uh like"
 sys.modules["speech_to_text"] = dummy_speech_to_text
-import os
-#sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import re
 from datetime import datetime
 import pytest
