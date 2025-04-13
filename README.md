@@ -1,5 +1,5 @@
-![ML Client Build](https://github.com/your-org/your-repo/actions/workflows/ml-client.yml/badge.svg)
-![Web App Build](https://github.com/your-org/your-repo/actions/workflows/web-app.yml/badge.svg)
+![ML Client Build](https://github.com/software-students-spring2025/4-containers-llamajammers/actions/workflows/ml-client.yml/badge.svg)
+![Web App Build](https://github.com/software-students-spring2025/4-containers-llamajammers/actions/workflows/web-app.yml/badge.svg)
 
 # Filler Word Detection in Audio Recordings
 
@@ -33,7 +33,6 @@ Follow the steps below to configure and run the entire system on your machine.
 
 - **Docker and Docker Compose:**  
   Make sure you have [Docker](https://docs.docker.com/get-docker/) installed on your platform.
-  
 - **Additional System Dependencies:**  
   Your host system may need FFmpeg installed (especially if running the ML client outside the container).
 
