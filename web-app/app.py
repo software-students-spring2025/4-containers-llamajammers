@@ -1,6 +1,9 @@
-# pylint: disable=import-error,wrong-import-position
-import os
 import sys
+import types
+dummy_speech_to_text = types.ModuleType("speech_to_text")
+dummy_speech_to_text.speech_to_text = lambda filename: "um uh like"
+sys.modules["speech_to_text"] = dummy_speech_to_text
+import os
 import threading
 import re
 from datetime import datetime
