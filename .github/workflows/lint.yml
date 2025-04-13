@@ -1,4 +1,5 @@
 name: lint-free
+
 on: [push, pull_request]
 
 jobs:
@@ -6,36 +7,40 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # repeat same job for each subsystem in the following subdirectories
-        subdir: [web-app, machine-learning-client]
+        # repeat same job for each subsystem
+        subdir: [web-app, machine_learning_client]
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10" # update version(s) as needed
+          python-version: "3.10"
+
       - name: Install system dependencies
-        if: ${{ matrix.subdir == 'machine-learning-client' }}
+        if: ${{ matrix.subdir == 'machine_learning_client' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y portaudio19-dev python3-pyaudio
-      - name: Install dependencies
+          sudo apt-get install -y portaudio19-dev python3-dev ffmpeg
+
+      - name: Install Pipenv and dependencies
         if: ${{ hashFiles(format('{0}/**/*.py', matrix.subdir)) != '' }}
         run: |
           cd ${{ matrix.subdir }}
           python -m pip install --upgrade pip
-          python -m pip install pipenv
-          pipenv sync --dev --python $(which python)
-          pipenv shell --fancy --python $(which python)
+          pip install pipenv
+          pipenv install --dev
+
       - name: Lint with pylint
         if: ${{ hashFiles(format('{0}/**/*.py', matrix.subdir)) != '' }}
-        # you may set pylint to ignore any files or dependencies that make no sense to lint
         run: |
           cd ${{ matrix.subdir }}
-          pipenv run pylint --ignore=pyaudio.py **/*.py
+          PYTHONPATH=.. pipenv run pylint --disable=import-error --ignore=pyaudio.py **/*.py
+
       - name: Format with black
         if: ${{ hashFiles(format('{0}/**/*.py', matrix.subdir)) != '' }}
-        # you may set black to ignore any files or dependencies that make no sense to format
         run: |
           cd ${{ matrix.subdir }}
           pipenv run black --diff --check .
