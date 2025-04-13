@@ -3,7 +3,9 @@
 import wave
 import logging
 import pyaudio
-
+import pytest
+from unittest import mock
+from machine_learning_client.audio_recording import audio_recording
 
 def audio_recording(filename="recording.wav", stop_event=None, record_seconds=60):
     """Use PyAudio for recording audio and saving as a wave file."""
