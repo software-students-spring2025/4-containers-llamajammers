@@ -2,12 +2,10 @@ name: ML Client
 
 on:
   pull_request:
-    branches:
-      - main
-      - master
+    branches: [main]
     paths:
       - "machine-learning-client/**"
-      - ".github/workflows/ml-client-ci.yml"
+      - ".github/workflows/ml-client.yml"
 
 jobs:
   test:
