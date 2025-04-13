@@ -14,7 +14,6 @@ from datetime import datetime
 
 from flask import Flask, render_template_string, jsonify
 from pymongo import MongoClient
-# pylint: enable=import-error,wrong-import-position
 
 # Add the machine-learning-client directory to the Python path
 current_dir = os.path.dirname(__file__)
@@ -24,6 +23,8 @@ sys.path.append(ml_client_path)
 
 from audio_recording import audio_recording
 from speech_to_text import speech_to_text
+
+# pylint: enable=import-error,wrong-import-position
 
 app = Flask(__name__)
 RECORDING_FILENAME = "recording.wav"  # Adjust path if needed
@@ -35,9 +36,22 @@ recordings_collection = db["recordings"]
 
 # List of filler words to detect (can add more later)
 FILLER_WORDS = [
-    "um", "uh", "like", "you know", "so", "well", "I mean",
-    "just", "basically", "sort of", "kind of", "hmm", "I guess",
-    "yeah", "right", "basically"
+    "um",
+    "uh",
+    "like",
+    "you know",
+    "so",
+    "well",
+    "I mean",
+    "just",
+    "basically",
+    "sort of",
+    "kind of",
+    "hmm",
+    "I guess",
+    "yeah",
+    "right",
+    "basically",
 ]
 
 # HTML Template for the Main Page
@@ -86,7 +100,8 @@ MAIN_PAGE_TEMPLATE = (
     "</html>\n"
 )
 
-def count_filler_words(transcript):
+
+def count_filler_words(transcription):
     """Count total occurrences of filler words in the transcript.
 
     Args:
@@ -96,12 +111,13 @@ def count_filler_words(transcript):
         int: The total filler word count.
     """
     total = 0
-    transcript_lower = transcript.lower()
+    transcript_lower = transcription.lower()
     for word in FILLER_WORDS:
         pattern = r"\b" + re.escape(word) + r"\b"
         matches = re.findall(pattern, transcript_lower)
         total += len(matches)
     return total
+
 
 # Global variables for recording control.
 # pylint: disable=invalid-name
@@ -109,10 +125,12 @@ recording_thread = None
 stop_recording_event = None
 # pylint: enable=invalid-name
 
+
 @app.route("/")
 def index():
     """Render the main page."""
     return render_template_string(MAIN_PAGE_TEMPLATE)
+
 
 @app.route("/start_recording", methods=["GET"])
 def start_recording():
@@ -124,6 +142,7 @@ def start_recording():
     )
     recording_thread.start()
     return jsonify({"status": "recording started"})
+
 
 @app.route("/stop_recording", methods=["GET"])
 def stop_recording():
@@ -156,6 +175,7 @@ def stop_recording():
     summary = f"Detected {filler_count} filler words in your recording."
     return jsonify({"success": True, "summary": summary})
 
+
 @app.route("/transcript", methods=["GET"])
 def transcript():
     """Render the transcript page with highlighted filler words."""
@@ -171,7 +191,7 @@ def transcript():
                 r"(\b" + re.escape(word) + r"\b)",
                 r"<b>\1</b>",
                 text,
-                flags=re.IGNORECASE
+                flags=re.IGNORECASE,
             )
         return text
 
@@ -195,6 +215,7 @@ def transcript():
         "</html>\n"
     )
     return transcript_page
+
 
 if __name__ == "__main__":
     if os.path.exists(RECORDING_FILENAME):

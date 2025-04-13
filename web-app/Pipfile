@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pylint = "*"
 black = "*"
+pyaudio = "==0.2.14"
 openai-whisper = "==20240930"
 [dev-packages]
 
