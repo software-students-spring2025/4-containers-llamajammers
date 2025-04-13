@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  web-app:
+    build: ./web-app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+
+  ml-client:
+    build: ./machine-learning-client
+    ports:
+      - "8000:8000"
+
+  mongodb:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
