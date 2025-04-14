@@ -36,9 +36,10 @@ jobs:
           pipenv install --dev
 
       - name: Run tests and collect coverage
-        run: |
-          export CFLAGS="-I/usr/include"
-          export CUDA_VISIBLE_DEVICES=""
+        env:
+          CUDA_VISIBLE_DEVICES: ""
           TORCH_CUDA_DISABLE: "1"
+          CFLAGS: "-I/usr/include -I/usr/local/include"
+        run: |
           cd machine_learning_client
           PYTHONPATH=. pipenv run pytest tests/ --cov=machine_learning_client --cov-report=term-missing
