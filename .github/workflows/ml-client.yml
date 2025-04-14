@@ -37,6 +37,7 @@ jobs:
 
       - name: Run tests and collect coverage
         run: |
+          export CFLAGS="-I/usr/include"
           export CUDA_VISIBLE_DEVICES=""
           cd machine_learning_client
           PYTHONPATH=. pipenv run pytest tests/ --cov=machine_learning_client --cov-report=term-missing
