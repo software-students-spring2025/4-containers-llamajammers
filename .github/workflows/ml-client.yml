@@ -34,6 +34,10 @@ jobs:
           pip install pipenv
           cd machine_learning_client
           pipenv install --dev
+          # Uninstall any torch that got installed (CUDA build)
+          pipenv run pip uninstall -y torch
+          # Install torch 2.6.0 (CPU only on your platform)
+          pipenv run pip install torch==2.6.0
 
       - name: Run tests and collect coverage
         env:
