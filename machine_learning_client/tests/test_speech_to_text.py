@@ -1,5 +1,6 @@
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
+os.environ["TORCH_CUDA_DISABLE"] = "1"
 from machine_learning_client.speech_to_text import speech_to_text
 from unittest.mock import patch, MagicMock
 
