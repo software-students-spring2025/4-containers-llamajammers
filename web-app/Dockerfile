@@ -2,13 +2,13 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-COPY web-app/Pipfile web-app/Pipfile.lock /app/
+COPY Pipfile Pipfile.lock /app/
 
 RUN pip install --no-cache-dir pipenv
 
 RUN pipenv install --deploy --ignore-pipfile
 
-COPY web-app /app
+COPY . /app
 
 EXPOSE 5000
 
