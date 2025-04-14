@@ -26,7 +26,7 @@ jobs:
       - name: Install system dependencies (for PyAudio + ffmpeg)
         run: |
           sudo apt-get update
-          sudo apt-get install -y portaudio19-dev ffmpeg
+          sudo apt-get install -y portaudio19-dev libasound2-dev ffmpeg
 
       - name: Install Pipenv and dependencies
         run: |
