@@ -39,5 +39,6 @@ jobs:
         run: |
           export CFLAGS="-I/usr/include"
           export CUDA_VISIBLE_DEVICES=""
+          TORCH_CUDA_DISABLE: "1"
           cd machine_learning_client
           PYTHONPATH=. pipenv run pytest tests/ --cov=machine_learning_client --cov-report=term-missing
