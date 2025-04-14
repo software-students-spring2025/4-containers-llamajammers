@@ -32,7 +32,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pipenv
-          cd machine-learning-client
+          cd machine_learning_client
           pipenv install --dev
 
       - name: Run tests and collect coverage
